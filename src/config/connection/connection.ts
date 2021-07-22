@@ -2,18 +2,21 @@ import * as mongoose from 'mongoose';
 import config from '../env';
 
 interface IConnectOptions {
-  autoReconnect: boolean;
-  reconnectTries: number; // Never stop trying to reconnect
-  reconnectInterval: number;
+  autoReconnect?: boolean;
+  reconnectTries?: number; // Never stop trying to reconnect
+  reconnectInterval?: number;
   loggerLevel?: string;
   useNewUrlParser?: boolean;
+  useUnifiedTopology?: boolean;
+  useCreateIndex: boolean;
+  useFindAndModify: boolean
 }
 
 const connectOptions: IConnectOptions = {
-  autoReconnect: true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 1000,
   useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+  useFindAndModify: false
 };
 
 const MONGO_URI: string = `${config.database.host}:${config.database.port}/${config.database.dbName}`;
@@ -38,13 +41,6 @@ db.once('open', () => {
   console.log('\x1b[32m', 'MongoDB :: connection opened');
 });
 
-db.on('reconnected', () => {
-  console.log('\x1b[33m"', 'MongoDB :: reconnected');
-});
-
-db.on('reconnectFailed', () => {
-  console.log('\x1b[31m', 'MongoDB :: reconnectFailed');
-});
 
 db.on('disconnected', () => {
   console.log('\x1b[31m', 'MongoDB :: disconnected');
